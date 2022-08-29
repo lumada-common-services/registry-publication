@@ -1,41 +1,43 @@
 name: 'Registry publication'
 description: 'Generic action to publish container images and helm charts to a specified registry.'
+
 inputs:
-    IMAGES:
+    ARTIFACTS_CONFIG_FILE:
+      description: 'File to hold all artifacts related configs'
       required: true
-      type: string
-      description: 'A new line (\n) separated string with the intended images to publish'
-    HELM_CHARTS:
-      required: true
-      type: string
-      description: 'A new line (\n) separated string with the intended charts to be published'
-    ARTIFACTORY_URL:
-      required: true
-      type: string
+
     ARTIFACTORY_USER:
       description: 'User to login'
       required: true
+
     ARTIFACTORY_APIKEY:
       description: 'API key to login'
       required: true
-    ARTIFACTORY_HELM_REPO:
-      description: 'Helm repo'
-      required: true
-    ARTIFACTORY_DOCKER_REPO:
-      description: 'Docker repo'
-      required: true
+
     BUILD_NAME:
       description: 'Name to identify build'
       required: true
+
     BUILD_NUMBER:
       description: 'Builds number'
       required: true
+
+    BUILD_VERSION:
+      description: 'Current build version'
+      required: true
+
     WORKSPACE:
       description: 'Checkout workspace'
       required: true
+
+    BUILD_URL:
+      description: "The build URL"
+      required: true
+
 outputs:
   publish-outcome:
     description: 'The outcome of the publish operation.'
+
 runs:
   using: 'docker'
   image: 'Dockerfile'

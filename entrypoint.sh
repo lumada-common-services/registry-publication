@@ -1,48 +1,70 @@
-#!/bin/sh
+#!/bin/bash
 
 set -eo pipefail
 
+source utils.sh
+
+ARTIFACTORY_URL=$(yq '.repository-manager' ${INPUT_ARTIFACTS_CONFIG_FILE})
+
 jfrog config add artifactory --interactive=false --enc-password=true \
-  --artifactory-url ${INPUT_ARTIFACTORY_URL} \
+  --artifactory-url ${ARTIFACTORY_URL} \
   --apikey ${INPUT_ARTIFACTORY_APIKEY} \
   --user ${INPUT_ARTIFACTORY_USER}
 
-# Taking care of the docker images
-for image in ${INPUT_IMAGES}; do
+export JFROG_CLI_BUILD_URL="$INPUT_BUILD_URL"
 
-  jfrog rt dp $image ${INPUT_ARTIFACTORY_DOCKER_REPO} \
-    --build-name ${INPUT_BUILD_NAME} \
-    --build-number ${INPUT_BUILD_NUMBER}
+# Dealing with the artifacts
+ARTIFACTS=$(yq '.artifacts | keys' ${INPUT_ARTIFACTS_CONFIG_FILE})
+for artifact_repo in ${ARTIFACTS};
+do
 
-done
+  if [ "$artifact_repo" == "-" ]; then
+    continue
+  fi
 
-# Taking care of the helm charts
-for chart in ${INPUT_HELM_CHARTS}; do
-  if [ -e $chart ]
-  then
-    jfrog rt u $chart ${INPUT_ARTIFACTORY_HELM_REPO} \
-      --build-name ${INPUT_BUILD_NAME} \
-      --build-number ${INPUT_BUILD_NUMBER}
+  repo_type=$(jfrog rt curl /api/repositories/${artifact_repo} -s | jq -r .packageType)
+  artifact_structure=".artifacts.${artifact_repo}[]"
+
+  files=$(yq -o=j -I=0 "${artifact_structure}" ${INPUT_ARTIFACTS_CONFIG_FILE})
+
+  if [ "${repo_type}" == "docker" ]; then
+
+    docker_repo="${artifact_repo}"
+
+    docker_base_url=$(yq '.docker-base-url' ${INPUT_ARTIFACTS_CONFIG_FILE})
+    docker_registry="${docker_repo}.${docker_base_url}"
+
+    dockerPush "${files}" \
+               "${INPUT_BUILD_VERSION}" \
+               "${docker_repo}" \
+               "${docker_registry}" \
+               "${INPUT_BUILD_NAME}" \
+               "${INPUT_BUILD_NUMBER}"
 
   else
-      echo "Could not find '$chart'. Not adding..."
+    search_include_pattern=$(yq '.search-patterns.include' ${INPUT_ARTIFACTS_CONFIG_FILE})
+    search_exclude_pattern=$(yq '.search-patterns.exclude' ${INPUT_ARTIFACTS_CONFIG_FILE})
 
+    uploadFiles "${artifact_repo}" \
+                "${files}" \
+                "${INPUT_BUILD_VERSION}" \
+                "${search_include_pattern}" \
+                "${search_exclude_pattern}" \
+                "${INPUT_WORKSPACE}" \
+                "${INPUT_BUILD_NAME}" \
+                "${INPUT_BUILD_NUMBER}"
   fi
+
 done
 
 # collect ENV variables for build-info
-jfrog rt bce ${INPUT_BUILD_NAME} ${INPUT_BUILD_NUMBER}
-
-ls -la ${INPUT_WORKSPACE}
+jfrog rt build-collect-env ${INPUT_BUILD_NAME} ${INPUT_BUILD_NUMBER}
 
 # Collect git info from checkout dir
-jfrog rt bag ${INPUT_BUILD_NAME} ${INPUT_BUILD_NUMBER} ${INPUT_WORKSPACE}
-
-# Add artifacts as build dependencies ?
-#jfrog rt bad ${INPUT_BUILD_NAME} ${INPUT_BUILD_NUMBER} "${INPUT_ARTIFACTORY_HELM_REPO}/dependencies/" --from-rt
+jfrog rt build-add-git ${INPUT_BUILD_NAME} ${INPUT_BUILD_NUMBER} ${INPUT_WORKSPACE}
 
 # Publish build-info
-jfrog rt bp ${INPUT_BUILD_NAME} ${INPUT_BUILD_NUMBER}
+jfrog rt build-publish ${INPUT_BUILD_NAME} ${INPUT_BUILD_NUMBER}
 
 SUCCESS=$(jfrog rt ping)
 
