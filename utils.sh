@@ -14,11 +14,10 @@ function createArtifactsMap() {
 
     props=""
     file_keys=$(echo ${file} | yq e ' keys')
-
+    
     for file_key in ${file_keys};
     do
-
-      if [ "$file_key" == "-" ]; then
+      if [ "$file_key" == "-" -o "$file_key" == "" ]; then
         continue
       fi
       key_value=$(echo "${file}" | yq e ".$file_key")
@@ -32,7 +31,7 @@ function createArtifactsMap() {
 
   echo '('
     for key in  "${!propsMap[@]}" ; do
-        echo "['$key']='${propsMap[$key]}'"
+      echo "['$key']='${propsMap[$key]}'"
     done
   echo ')'
 }
@@ -64,7 +63,7 @@ function dockerPush() {
     image_name=$(echo ${image_name} | sed -e "s/:/\//g")
     echo "jfrog rt set-props \"${docker_repo}/${image_name}/\" \"${props}\""
 
-    jfrog rt set-props "${docker_repo}/${image_name}/" "${props}" # --build="${build_name}/${build_number}"
+    jfrog rt set-props "${docker_repo}/${image_name}/" "${props}"
 
   done
 }
@@ -107,9 +106,13 @@ function uploadFiles() {
       remote_file="${remote_repo}/${file_name}"
 
       props=${propsMap[$file_name]}
+      if [ "$props" == "" ]; then
+        for key in  "${!propsMap[@]}" ; do
+            props="${propsMap[$key]}"
+        done
+      fi
       props=$(echo "$props" | tr -d '"')
-
-      jfrog rt set-props "${remote_file}" "${props}" # --build="${build_name}/${build_number}"
+      jfrog rt set-props "${remote_file}" "${props}"
 
     else
         echo "Could not find '$found_file'. Not adding..."

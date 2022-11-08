@@ -2,7 +2,7 @@ name: 'Publication to registry smoke tester'
 on:
   push:
     branches:
-      - "YKN-6-2"
+      - "YKN-216"
 
 jobs:
   action-smoker:
@@ -11,7 +11,7 @@ jobs:
       publish-outcome: ${{ steps.registry-publication-action.outputs.report }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Preparing docker images for smoke test
         run: |
