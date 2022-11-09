@@ -1,12 +1,30 @@
-FROM docker.repo.orl.eng.hitachivantara.com/maven:3.8.6-openjdk-11-slim
+FROM docker.repo.orl.eng.hitachivantara.com/alpine:3.16
 
-# Helm
-ENV HELM_VERSION=v3.1.2
-ENV HELM_FILENAME=helm-${HELM_VERSION}-linux-amd64.tar.gz
+WORKDIR /registry-publication
 
-RUN curl -L https://get.helm.sh/${HELM_FILENAME} | tar xz && mv linux-amd64/helm /bin/helm && rm -rf linux-amd64
+LABEL "version"="0.0.1"
 
-# Docker ce
-ENV VERSION=20.10.21
-RUN curl -sSL https://get.docker.com | sh
+## Make sure that the CLI doesn't offer to store credentials
+ENV JFROG_CLI_OFFER_CONFIG=false
 
+RUN apk add --no-cache \
+  bash \
+  curl \
+  docker \
+  openrc \
+  jq \
+  findutils && \
+  rm -rf /var/cache/apk/*
+
+# Add docker service start at boot time
+RUN rc-update add docker boot
+
+RUN curl -fL https://getcli.jfrog.io | sh
+RUN mv jfrog /usr/bin/jfrog && chmod +x /usr/bin/jfrog
+
+RUN wget https://github.com/mikefarah/yq/releases/download/v4.27.2/yq_linux_amd64 -O /usr/bin/yq \
+    && chmod +x /usr/bin/yq
+
+COPY entrypoint.sh utils.sh /registry-publication/
+
+ENTRYPOINT ["/registry-publication/entrypoint.sh"]
