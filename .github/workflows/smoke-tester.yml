@@ -2,7 +2,7 @@ name: 'Publication to registry smoke tester'
 on:
   push:
     branches:
-      - "YKN-216"
+      - "YKN-216-jfrog"
 
 jobs:
   action-smoker:
