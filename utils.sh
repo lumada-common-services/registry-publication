@@ -163,13 +163,13 @@ function uploadFilesFromCommand() {
  # declare -A propsMap=$(createArtifactsMap "$files" "$build_version")
 
   for file in ${files}; do
-    deploy-command=$(echo ${file} | yq e '.deploy-command')
-    echo "****${deploy-command}****"
-    if [ "${deploy-command}" == "-" ]; then
+    deploy_command=$(echo ${file} | yq e '.deploy-command')
+    echo "****${deploy_command}****"
+    if [ "${deploy_command}" == "-" ]; then
       continue
     fi
   
-    jfrog ${deploy-command} -f ${workspace} --build-name ${build_name} --build-number ${build_number}
+    jfrog ${deploy_command} -f ${workspace} --build-name ${build_name} --build-number ${build_number}
 
   done
 
