@@ -34,12 +34,12 @@ do
     docker_base_url=$(yq '.docker-base-url' ${INPUT_ARTIFACTS_CONFIG_FILE})
     docker_registry="${docker_repo}.${docker_base_url}"
 
-    dockerPush "${files}" \
-               "${INPUT_BUILD_VERSION}" \
-               "${docker_repo}" \
-               "${docker_registry}" \
-               "${INPUT_BUILD_NAME}" \
-               "${INPUT_BUILD_NUMBER}"
+    #dockerPush "${files}" \
+    #           "${INPUT_BUILD_VERSION}" \
+    #           "${docker_repo}" \
+    #           "${docker_registry}" \
+    #           "${INPUT_BUILD_NAME}" \
+    #           "${INPUT_BUILD_NUMBER}"
 
   else
     search_include_pattern=$(yq '.search-patterns.include' ${INPUT_ARTIFACTS_CONFIG_FILE})

@@ -164,6 +164,9 @@ function uploadFilesFromCommand() {
 
   for file in ${files}; do
     deploy-command=$(echo ${file} | yq e '.deploy-command')
+    if [ "$deploy-command" == "-" ]; then
+      continue
+    fi
   
     jfrog ${deploy-command} -f ${workspace} --build-name ${build_name} --build-number ${build_number}
 
