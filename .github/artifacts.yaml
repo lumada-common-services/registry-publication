@@ -16,5 +16,5 @@ artifacts:
     - name: 'hello-world:<VERSION>'
 
   temp-helm:
-    - deploy-command: 'mvn clean install'
+    - deploy-command: "mvn clean install"
       for-release: true
