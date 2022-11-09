@@ -164,6 +164,7 @@ function uploadFilesFromCommand() {
 
   for file in ${files}; do
     deploy-command=$(echo ${file} | yq e '.deploy-command')
+    echo "****${deploy-command}****"
     if [ "${deploy-command}" == "-" ]; then
       continue
     fi
