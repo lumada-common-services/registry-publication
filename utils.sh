@@ -163,7 +163,8 @@ function uploadFilesFromCommand() {
  # declare -A propsMap=$(createArtifactsMap "$files" "$build_version")
 
   for file in ${files}; do
-    deploy_command=$(echo ${file} | yq e '.deploy-command')
+    echo "****${file}****"
+    local deploy_command=$(echo ${file} | yq e '.deploy-command')
     echo "****${deploy_command}****"
     if [ "${deploy_command}" == "-" ]; then
       continue
