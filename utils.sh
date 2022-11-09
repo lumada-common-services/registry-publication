@@ -121,3 +121,52 @@ function uploadFiles() {
   done
 
 }
+
+function dockerPush() {
+  images_list=$1
+  build_version=$2
+  docker_repo=$3
+  docker_registry=$4
+  build_name=$5
+  build_number=$6
+
+  declare -A propsMap=$(createArtifactsMap "$files" "$build_version")
+
+  for image in ${images_list};
+  do
+    image_name=$(echo ${image} | yq e '.name')
+    for_release=$(echo ${image} | yq e '.for-release')
+
+    image_name=$(echo ${image_name} | sed -e "s/<VERSION>/${build_version}/g")
+
+    jfrog rt docker-push ${docker_registry}/${image_name} ${docker_repo} \
+      --build-name ${build_name} \
+      --build-number ${build_number}
+
+    props=${propsMap[$image_name]}
+    props=$(echo "$props" | tr -d '"')
+
+    image_name=$(echo ${image_name} | sed -e "s/:/\//g")
+    echo "jfrog rt set-props \"${docker_repo}/${image_name}/\" \"${props}\""
+
+    jfrog rt set-props "${docker_repo}/${image_name}/" "${props}"
+
+  done
+}
+
+function uploadFilesFromCommand() {
+  files=$1
+  workspace=$2
+  build_name=$3
+  build_number=$4
+
+ # declare -A propsMap=$(createArtifactsMap "$files" "$build_version")
+
+  for file in ${files}; do
+    deploy-command=$(echo ${file} | yq e '.deploy-command')
+  
+    jfrog deploy-command -f ${workspace} --build-name ${build_name} --build-number ${build_number}
+
+  done
+
+}

@@ -16,5 +16,5 @@ artifacts:
     - name: 'hello-world:<VERSION>'
 
   temp-helm:
-    - name: 'my-chart-.*\.tgz'
+    - deploy-command: mvn clean install
       for-release: true

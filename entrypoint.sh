@@ -45,6 +45,12 @@ do
     search_include_pattern=$(yq '.search-patterns.include' ${INPUT_ARTIFACTS_CONFIG_FILE})
     search_exclude_pattern=$(yq '.search-patterns.exclude' ${INPUT_ARTIFACTS_CONFIG_FILE})
 
+    # Will try to see if there is a deploy command in there first. If it fails, will try to check the artifacts
+    uploadFilesFromCommand "${files}" \
+                           "${INPUT_WORKSPACE}" \
+                           "${INPUT_BUILD_NAME}" \
+                           "${INPUT_BUILD_NUMBER}" \
+    || \
     uploadFiles "${artifact_repo}" \
                 "${files}" \
                 "${INPUT_BUILD_VERSION}" \
