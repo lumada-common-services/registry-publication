@@ -1,43 +1,87 @@
-name: 'Registry publication'
-description: 'Generic action to publish container images and helm charts to a specified registry.'
+name: "Registry publication"
+description: "Generic action to publish container images and helm charts to a specified registry."
 
 inputs:
-    ARTIFACTS_CONFIG_FILE:
-      description: 'File to hold all artifacts related configs'
-      required: true
+  ARTIFACTS_CONFIG_FILE:
+    description: "File to hold all artifacts related configs"
+    required: true
 
-    ARTIFACTORY_USER:
-      description: 'User to login'
-      required: true
+  ARTIFACTORY_USER:
+    description: "User to login"
+    required: true
 
-    ARTIFACTORY_APIKEY:
-      description: 'API key to login'
-      required: true
+  ARTIFACTORY_APIKEY:
+    description: "API key to login"
+    required: true
 
-    BUILD_NAME:
-      description: 'Name to identify build'
-      required: true
+  BUILD_NAME:
+    description: "Name to identify build"
+    required: true
 
-    BUILD_NUMBER:
-      description: 'Builds number'
-      required: true
+  BUILD_NUMBER:
+    description: "Builds number"
+    required: true
 
-    BUILD_VERSION:
-      description: 'Current build version'
-      required: true
+  BUILD_VERSION:
+    description: "Current build version"
+    required: true
 
-    WORKSPACE:
-      description: 'Checkout workspace'
-      required: true
+  WORKSPACE:
+    description: "Checkout workspace"
+    required: true
 
-    BUILD_URL:
-      description: "The build URL"
-      required: true
-
-outputs:
-  publish-outcome:
-    description: 'The outcome of the publish operation.'
+  BUILD_URL:
+    description: "The build URL"
+    required: true
 
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: "composite"
+  steps:
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10' 
+    - run: pip install pyyaml
+      shell: sh
+
+    - uses: jfrog/setup-jfrog-cli@v3
+      name: Setup Jfrog CLI
+      env:
+        JF_URL: "https://repo.orl.eng.hitachivantara.com"
+    
+        # Basic authentication credentials
+        JF_USER: ${{ inputs.ARTIFACTORY_USER }}
+        # JFrog Platform access token
+        JF_PASSWORD: ${{ inputs.ARTIFACTORY_APIKEY }}
+
+    - name: Configure
+      shell: bash
+      run: |       
+        jf config use setup-jfrog-cli-server
+
+        export JFROG_CLI_BUILD_URL="${{ inputs.BUILD_URL }}"
+
+    - name: Add artifacts to build-info
+      shell: sh
+      run: |
+        python "${GITHUB_ACTION_PATH}"/entrypoint.py \
+          "${{ inputs.WORKSPACE }}/${{ inputs.ARTIFACTS_CONFIG_FILE }}" \
+          "${{ inputs.WORKSPACE }}" \
+          "${{ inputs.BUILD_VERSION }}" \
+          "${{ inputs.BUILD_NAME }}" \
+          "${{ inputs.BUILD_NUMBER }}"
+
+    - name: Collect ENV variables for build-info
+      shell: bash
+      run: |
+        jf rt build-collect-env "${{ inputs.BUILD_NAME }}" "${{ inputs.BUILD_NUMBER }}"
+
+    - name: Collect git info from checkout dir
+      shell: bash
+      run: |
+        #jf rt build-add-git "${{ inputs.BUILD_NAME }}" "${{ inputs.BUILD_NUMBER }}" .
+
+    - name: Publish build-info
+      shell: bash
+      run: |
+        jf rt build-publish "${{ inputs.BUILD_NAME }}" "${{ inputs.BUILD_NUMBER }}"

@@ -65,8 +65,3 @@ jfrog rt build-add-git ${INPUT_BUILD_NAME} ${INPUT_BUILD_NUMBER} ${INPUT_WORKSPA
 
 # Publish build-info
 jfrog rt build-publish ${INPUT_BUILD_NAME} ${INPUT_BUILD_NUMBER}
-
-SUCCESS=$(jfrog rt ping)
-
-# temporary
-# tail -f /dev/null

@@ -1,4 +1,4 @@
-FROM docker.repo.orl.eng.hitachivantara.com/alpine:3.16
+FROM docker.repo.orl.eng.hitachivantara.com/python:3.12.0a1-alpine3.16
 
 WORKDIR /registry-publication
 
@@ -12,19 +12,16 @@ RUN apk add --no-cache \
   curl \
   docker \
   openrc \
-  jq \
   findutils && \
   rm -rf /var/cache/apk/*
 
 # Add docker service start at boot time
 RUN rc-update add docker boot
+RUN pip install pyyaml
 
 RUN curl -fL https://getcli.jfrog.io | sh
 RUN mv jfrog /usr/bin/jfrog && chmod +x /usr/bin/jfrog
 
-RUN wget https://github.com/mikefarah/yq/releases/download/v4.27.2/yq_linux_amd64 -O /usr/bin/yq \
-    && chmod +x /usr/bin/yq
+COPY entrypoint.py jfrog_actions.py /registry-publication/
 
-COPY entrypoint.sh utils.sh /registry-publication/
-
-ENTRYPOINT ["/registry-publication/entrypoint.sh"]
+ENTRYPOINT ["/registry-publication/entrypoint.py"]
