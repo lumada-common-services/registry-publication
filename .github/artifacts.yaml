@@ -16,8 +16,7 @@ artifacts:
     - name: 'hello-world:<VERSION>'
 
   temp-helm:
-    - name: 'my-chart-1-<VERSION>.tgz'
+    - name: 'my-chart-.*<VERSION>\.tgz'
       for-release: true
-    - name: 'my-chart-2-<VERSION>.tgz'
+    - name: 'another-chart-aux-<VERSION>.tgz'
       for-release: true
-    - name: 'my-chart-3-<VERSION>.tgz'
