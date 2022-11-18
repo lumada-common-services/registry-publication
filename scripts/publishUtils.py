@@ -9,7 +9,7 @@ def connectToArtifactory(url):
 
     print(
         runCommand(
-            "jfrog config add artifactory --interactive=false --enc-password=true --artifactory-url " + url + " --apikey " +
+            "jfrog config add artifactory --interactive=false --enc-password=true --artifactory-url " + url + " --password " +
             str(os.getenv('INPUT_ARTIFACTORY_APIKEY')) +
             " --user " + str(os.getenv('INPUT_ARTIFACTORY_USER'))
         )
