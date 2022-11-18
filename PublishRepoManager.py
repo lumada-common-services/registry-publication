@@ -11,8 +11,11 @@ class ArtifactoryRepoManager():
     def __init__(self, data) -> None:
         self.data = data
 
-    def publishArtifacts(self):
+    def publish(self) -> self:
         artifactsYaml = self.data['artifactsYaml']
+
+        # Connect to Artifactory
+        connectToArtifactory(artifactsYaml['repository-manager'])
 
         for repo, values in artifactsYaml['artifacts'].items():
             repoType = self.getRepoType(repo)
@@ -26,6 +29,8 @@ class ArtifactoryRepoManager():
                 implCls = HelmPublishRepo(data)
 
             implCls.publishArtifacts(values)
+
+        buildInfo(data['buildName'], data['buildNumber'], data['workspace'])
 
     def getRepoType(self, repoName) -> str:
         responseJson = runCommand(

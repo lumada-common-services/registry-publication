@@ -1,11 +1,24 @@
-FROM docker.repo.orl.eng.hitachivantara.com/maven:3.8.6-openjdk-11-slim
+FROM docker.repo.orl.eng.hitachivantara.com/python:alpine3.16
 
-# Helm
-ENV HELM_VERSION=v3.1.2
-ENV HELM_FILENAME=helm-${HELM_VERSION}-linux-amd64.tar.gz
+WORKDIR /registry-publication
 
-RUN curl -L https://get.helm.sh/${HELM_FILENAME} | tar xz && mv linux-amd64/helm /bin/helm && rm -rf linux-amd64
+## Make sure that the CLI doesn't offer to store credentials
+ENV JFROG_CLI_OFFER_CONFIG=false
 
-# Docker ce
-ENV VERSION=20.10.21
-RUN curl -sSL https://get.docker.com | sh
+RUN apk update
+RUN apk add --no-cache \
+  curl \
+  docker \
+  openrc \
+  rm -rf /var/cache/apk/*
+
+# Add docker service start at boot time
+RUN rc-update add docker boot
+RUN pip install pyyaml
+
+RUN curl -fL https://getcli.jfrog.io | sh
+RUN mv jfrog /usr/bin/jfrog && chmod +x /usr/bin/jfrog
+
+COPY *.py /registry-publication/
+
+ENTRYPOINT ["/registry-publication/entrypoint.py"]
