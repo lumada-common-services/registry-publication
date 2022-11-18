@@ -3,7 +3,7 @@ name: Build and Push Container Image
 on:
   push:
     paths: 
-      - "Dockerfile"
+      - "Dodckerfile"
       - "scripts/"
 env:
   ARTIFACTORY: cicd-oci-release-orl.repo.orl.eng.hitachivantara.com
