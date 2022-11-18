@@ -66,6 +66,7 @@ class HelmPublishRepo(ArtifactoryRepo):
         for item in values:
             fileName = item['name'].replace("<VERSION>", version)
             regex = re.compile(fileName)
+
             # search for the files
             self.findAndUploadFiles(item, repoName, regex, dirIncludeRegex,
                                     dirExcludeRegex, rootDir, buildName, buildNumber)

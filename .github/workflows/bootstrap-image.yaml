@@ -3,8 +3,8 @@ name: Build and Push Container Image
 on:
   push:
     paths: 
-      - "Dodckerfile"
-      - "scripts/"
+      - "Dockerfile"
+      - "scripts/**"
 env:
   ARTIFACTORY: cicd-oci-release-orl.repo.orl.eng.hitachivantara.com
   IMAGE: ${{ github.repository_owner }}/${{ github.event.repository.name }}
