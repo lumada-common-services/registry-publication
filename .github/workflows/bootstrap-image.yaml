@@ -3,8 +3,8 @@ name: Build and Push Container Image
 on:
   push:
     paths: 
-      - ".github/bootstrap-image/**"
-      - "!.github/bootstrap-image/*.md"
+      - "Dockerfile"
+      - "scripts/"
 env:
   ARTIFACTORY: cicd-oci-release-orl.repo.orl.eng.hitachivantara.com
   IMAGE: ${{ github.repository_owner }}/${{ github.event.repository.name }}
@@ -27,7 +27,7 @@ jobs:
 
       - name: Build
         id: build-image
-        run: docker build -t "${{ env.ARTIFACTORY }}/${{ env.IMAGE }}" -f .github/bootstrap-image/Dockerfile .
+        run: docker build -t "${{ env.ARTIFACTORY }}/${{ env.IMAGE }}" -f Dockerfile .
 
       - name: Push to Artifactory
         id: push-to-artifactory

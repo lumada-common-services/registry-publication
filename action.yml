@@ -40,4 +40,4 @@ outputs:
 
 runs:
   using: 'docker'
-  image: '.github/bootstrap-image/Dockerfile'
+  image: 'Dockerfile'
