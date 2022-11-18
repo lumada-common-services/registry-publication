@@ -16,8 +16,7 @@ RUN apk add --no-cache \
 RUN rc-update add docker boot
 RUN pip install pyyaml
 
-ENV CLI_MAJOR_VER=v2
-RUN curl -fL https://getcli.jfrog.io | sh
+RUN curl -fL https://getcli.jfrog.io -o jf && sh jf v2
 RUN mv jfrog /usr/bin/jfrog && chmod +x /usr/bin/jfrog
 
 COPY ./scripts/*.py /registry-publication/
