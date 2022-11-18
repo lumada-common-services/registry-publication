@@ -7,10 +7,12 @@ import shlex
 
 def connectToArtifactory(url):
 
-    runCommand(
-        "jfrog config add artifactory --interactive=false --enc-password=true --artifactory-url " + url + " --apikey " +
-        str(os.getenv('INPUT_ARTIFACTORY_APIKEY')) +
-        " --user " + str(os.getenv('INPUT_ARTIFACTORY_USER'))
+    print(
+        runCommand(
+            "jfrog config add artifactory --interactive=false --enc-password=true --artifactory-url " + url + " --apikey " +
+            str(os.getenv('INPUT_ARTIFACTORY_APIKEY')) +
+            " --user " + str(os.getenv('INPUT_ARTIFACTORY_USER'))
+        )
     )
 
 
@@ -35,14 +37,14 @@ def runCommand(cmdStr):
 def buildInfo(buildName, buildNumber, workspace):
 
     # collect ENV variables for build-info
-    runCommand("jfrog rt build-collect-env " + buildName + " " + buildNumber)
+    print(runCommand("jfrog rt build-collect-env " + buildName + " " + buildNumber))
 
     # Collect git info from checkout dir
-    runCommand("jfrog rt build-add-git " + buildName +
-               " " + buildNumber + " " + workspace)
+    print(runCommand("jfrog rt build-add-git " + buildName +
+                     " " + buildNumber + " " + workspace))
 
     # Publish build-info
-    runCommand("jfrog rt build-publish " + buildName + " " + buildNumber)
+    print(runCommand("jfrog rt build-publish " + buildName + " " + buildNumber))
 
 
 def getProps(itemData) -> str:

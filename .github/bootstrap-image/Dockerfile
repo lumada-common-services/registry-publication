@@ -19,6 +19,6 @@ RUN pip install pyyaml
 RUN curl -fL https://getcli.jfrog.io | sh
 RUN mv jfrog /usr/bin/jfrog && chmod +x /usr/bin/jfrog
 
-COPY *.py /registry-publication/
+COPY ./scripts/*.py /registry-publication/
 
 ENTRYPOINT ["/registry-publication/entrypoint.py"]

@@ -11,7 +11,7 @@ class ArtifactoryRepoManager():
     def __init__(self, data) -> None:
         self.data = data
 
-    def publish(self) -> self:
+    def publish(self) -> None:
         artifactsYaml = self.data['artifactsYaml']
 
         # Connect to Artifactory
