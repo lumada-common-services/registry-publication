@@ -14,6 +14,4 @@ data = {"version": os.getenv('INPUT_BUILD_VERSION'),
         "workspace": os.getenv('INPUT_WORKSPACE'),
         "artifactsYaml": artifactsYaml}
 
-print(data)
-
 ArtifactoryRepoManager(data).publish()

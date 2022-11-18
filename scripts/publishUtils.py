@@ -28,8 +28,8 @@ def runCommand(cmdStr):
 
     print("* Running '" + cmdStr + "'")
 
-    # if str(stderr) != "":
-    #    raise Exception(str(stderr))
+    if str(stderr) != "":
+        raise Exception(str(stderr))
 
     return str(stdout)
 
