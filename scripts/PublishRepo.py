@@ -80,7 +80,7 @@ class HelmPublishRepo(ArtifactoryRepo):
 
             for fileFound in files:
 
-                if regex.match(fileFound):
+                if regex.match(fileFound, re.IGNORECASE):
                     fullFilePath = os.path.join(currentDir, fileFound)
                     remoteFile = repoName + "/" + fileFound
                     runCommand("jfrog rt upload " + fullFilePath + " " + remoteFile +
