@@ -40,4 +40,4 @@ outputs:
 
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: 'docker://cicd-oci-release-orl.repo.orl.eng.hitachivantara.com/lumada-common-services/registry-publication:20221122.16'
