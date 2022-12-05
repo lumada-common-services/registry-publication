@@ -42,7 +42,7 @@ class DockerPublishRepo(ArtifactoryRepo):
                 setProps(item, dockerRegistry + "/" + imageName)
 
 
-class HelmPublishRepo(ArtifactoryRepo):
+class PublishByUploadToRepo(ArtifactoryRepo):
 
     data = None
 

@@ -6,7 +6,7 @@ Usage example:
 - name: Run publication to registry
   id: registry-publication-action
   continue-on-error: false
-  uses: ./
+  uses: lumada-common-services/registry-publication@v1
   with:
     ARTIFACTS_CONFIG_FILE: ".github/artifacts.yaml"
     ARTIFACTORY_APIKEY:    ${{ secrets.VC_ART_API_KEY }}
@@ -17,5 +17,7 @@ Usage example:
     WORKSPACE:             ${{ github.workspace }}
     BUILD_URL:             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 ```
+
+See all available tags [here](../../tags)
 
 A small test smoke github workflow is available at [.github/workflows/smoke-tester.yaml](.github/workflows/smoke-tester.yml)

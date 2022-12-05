@@ -14,7 +14,6 @@ class ArtifactoryRepoManager():
     def publish(self) -> None:
         artifactsYaml = self.data['artifactsYaml']
 
-        # Connect to Artifactory
         connectToArtifactory(artifactsYaml['repository-manager'])
 
         for repo, values in artifactsYaml['artifacts'].items():
@@ -26,7 +25,7 @@ class ArtifactoryRepoManager():
                 implCls = DockerPublishRepo(data)
 
             else:
-                implCls = HelmPublishRepo(data)
+                implCls = PublishByUploadToRepo(data)
 
             implCls.publishArtifacts(values)
 

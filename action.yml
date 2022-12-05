@@ -1,5 +1,5 @@
 name: 'Registry publication'
-description: 'Generic action to publish container images and helm charts to a specified registry.'
+description: 'Generic action to publish artifacts to Artifactory.'
 
 inputs:
     ARTIFACTS_CONFIG_FILE:
