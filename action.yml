@@ -1,0 +1,43 @@
+name: 'Registry publication'
+description: 'Generic action to publish artifacts to Artifactory.'
+
+inputs:
+    ARTIFACTS_CONFIG_FILE:
+      description: 'File to hold all artifacts related configs'
+      required: true
+
+    ARTIFACTORY_USER:
+      description: 'User to login'
+      required: true
+
+    ARTIFACTORY_APIKEY:
+      description: 'API key to login'
+      required: true
+
+    BUILD_NAME:
+      description: 'Name to identify build'
+      required: true
+
+    BUILD_NUMBER:
+      description: 'Builds number'
+      required: true
+
+    BUILD_VERSION:
+      description: 'Current build version'
+      required: true
+
+    WORKSPACE:
+      description: 'Checkout workspace'
+      required: true
+
+    BUILD_URL:
+      description: "The build URL"
+      required: true
+
+outputs:
+  publish-outcome:
+    description: 'The outcome of the publish operation.'
+
+runs:
+  using: 'docker'
+  image: 'docker://cicd-oci-release-orl.repo.orl.eng.hitachivantara.com/lumada-common-services/registry-publication:20221122.16'

@@ -1,0 +1,36 @@
+name: 'Publication to registry smoke tester'
+on:
+  push:
+    branches:
+      - "YKN-252"
+
+jobs:
+  action-smoker:
+    runs-on: [ self-hosted, Linux, k8s ]
+    outputs:
+      publish-outcome: ${{ steps.registry-publication-action.outputs.report }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Preparing docker images for smoke test
+        run: |
+          docker pull docker.repo.orl.eng.hitachivantara.com/busybox
+          docker tag docker.repo.orl.eng.hitachivantara.com/busybox golden-vc-docker.repo.orl.eng.hitachivantara.com/busybox:0.0.1-SNAPSHOT
+
+          docker pull docker.repo.orl.eng.hitachivantara.com/hello-world
+          docker tag docker.repo.orl.eng.hitachivantara.com/hello-world golden-vc-docker.repo.orl.eng.hitachivantara.com/hello-world:0.0.1-SNAPSHOT
+
+      - name: Run publication to registry
+        id: registry-publication-action
+        continue-on-error: false
+        uses: ./
+        with:
+          ARTIFACTS_CONFIG_FILE: ".github/artifacts.yaml"
+          ARTIFACTORY_APIKEY:    ${{ secrets.VC_ART_API_KEY }}
+          ARTIFACTORY_USER:      ${{ secrets.VC_ART_USER }}
+          BUILD_NUMBER:          ${{ github.run_number }}
+          BUILD_NAME:            ${{ github.job }}
+          BUILD_VERSION:         "0.0.1-SNAPSHOT"
+          WORKSPACE:             ${{ github.workspace }} #${GITHUB_WORKSPACE}
+          BUILD_URL:             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

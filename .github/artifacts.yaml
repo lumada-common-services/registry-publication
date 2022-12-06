@@ -1,0 +1,22 @@
+
+# not applicable to docker images
+search-patterns:
+  # find -regextype posix-extended . -not -regex "(.*/.git/.*)" -regex ".*/.github/.*<FILENAME>"
+  include: '.*/.github/.*'
+  exclude: '(.*/.git/.*)'
+
+repository-manager: 'https://repo.orl.eng.hitachivantara.com/artifactory/'
+docker-base-url: 'repo.orl.eng.hitachivantara.com'
+
+artifacts:
+
+  golden-vc-docker:
+    - name: 'busybox:<VERSION>'
+      for-release: true
+    - name: 'hello-world:<VERSION>'
+
+  temp-helm:
+    - name: 'my-chart-.*<VERSION>\.tgz'
+      for-release: true
+    - name: 'another-chart-aux-<VERSION>.tgz'
+      for-release: true
