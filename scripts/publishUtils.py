@@ -29,7 +29,8 @@ def runCommand(cmdStr):
     print("* Running '" + cmdStr + "'")
 
     # TODO remeber to check why warnings are going into the stderr
-    #if str(stderr) != "":
+    if str(stderr) != "":
+        print(str(stderr))
     #    raise Exception(str(stderr))
 
     return str(stdout)
