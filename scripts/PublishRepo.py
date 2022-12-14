@@ -37,6 +37,14 @@ class DockerPublishRepo(ArtifactoryRepo):
 
             if imageName != "":
                 imageName = imageName.replace("<VERSION>", version)
+
+                try:
+                    runCommand("docker tag $(docker images --format \"{{.ID}} {{.Repository}}:{{.Tag}}\" | grep -w \"" +
+                               imageName + "$\" | cut -d ' ' -f1 | head -n 1) " + dockerRegistry + "/" + imageName)
+
+                except Exception as e:
+                    print(e)
+
                 runCommand("jfrog docker push " + dockerRegistry + "/" + imageName +
                            " --build-name " + buildName + " --build-number " + buildNumber)
                 setProps(item, dockerRegistry + "/" + imageName)
