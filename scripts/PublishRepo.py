@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from publishUtils import *
-
+import docker
 import re
 
 
@@ -37,6 +37,13 @@ class DockerPublishRepo(ArtifactoryRepo):
 
             if imageName != "":
                 imageName = imageName.replace("<VERSION>", version)
+
+                try:
+                    docker.from_env().images.get(imageName).tag(dockerRegistry + "/" + imageName)
+
+                except Exception as e:
+                    print(e)
+
                 runCommand("jfrog docker push " + dockerRegistry + "/" + imageName +
                            " --build-name " + buildName + " --build-number " + buildNumber)
                 setProps(item, dockerRegistry + "/" + imageName)

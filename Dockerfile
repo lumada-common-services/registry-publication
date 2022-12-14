@@ -15,6 +15,7 @@ RUN apk add --no-cache \
 # Add docker service start at boot time
 RUN rc-update add docker boot
 RUN pip install pyyaml
+RUN pip install docker
 
 RUN curl -fL https://getcli.jfrog.io -o jf && sh jf v2
 RUN mv jfrog /usr/bin/jfrog && chmod +x /usr/bin/jfrog
