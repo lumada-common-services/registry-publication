@@ -24,13 +24,12 @@ def runCommand(cmdStr):
                                stderr=subprocess.PIPE,
                                universal_newlines=True)
 
-    stdout, stderr = process.communicate()
-
     print("* Running '" + cmdStr + "'")
 
-    # TODO remeber to check why warnings are going into the stderr
-    #if str(stderr) != "":
-    #    raise Exception(str(stderr))
+    stdout, stderr = process.communicate()
+
+    if str(stderr) != "":
+        print(str(stderr))
 
     return str(stdout)
 
