@@ -1,5 +1,5 @@
 # registry-publication
-Generic github action to publish artifacts (So far, container images and helm charts) to Artifactory.
+Generic github action to publish artifacts to Artifactory.
 
 Usage example:
 ```
