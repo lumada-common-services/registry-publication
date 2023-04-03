@@ -2,6 +2,8 @@ name: Build and Push Container Image
 
 on:
   push:
+    branches:
+      - master
     paths: 
       - "Dockerfile"
       - "scripts/**"
@@ -48,4 +50,3 @@ jobs:
         with:
           tag: "build-image-${{ env.IMAGE_TAG }}"
           message: "${{ env.ARTIFACTORY }}/${{ env.IMAGE }}"
-

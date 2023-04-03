@@ -2,7 +2,6 @@
 
 import os
 import yaml
-import sys
 from PublishRepoManager import ArtifactoryRepoManager
 
 with open(os.getenv('INPUT_ARTIFACTS_CONFIG_FILE'), 'r') as stream:
