@@ -6,13 +6,16 @@ import shlex
 
 
 def connectToArtifactory(url):
-
     print(
         runCommand(
-            "jfrog config add artifactory --interactive=false --enc-password=true --artifactory-url " + url + " --password " +
-            str(os.getenv('INPUT_ARTIFACTORY_APIKEY')) +
+            "jfrog config add artifactory --interactive=false --enc-password=false --basic-auth-only --artifactory-url " +
+            url + " --password " + str(os.getenv('INPUT_ARTIFACTORY_APIKEY')) +
             " --user " + str(os.getenv('INPUT_ARTIFACTORY_USER'))
         )
+    )
+
+    print(
+        runCommand("jfrog rt ping")
     )
 
 
@@ -30,12 +33,13 @@ def runCommand(cmdStr):
 
     if str(stderr) != "":
         print(str(stderr))
+        if "[Error]" in str(stderr):
+            raise Exception()
 
     return str(stdout)
 
 
 def buildInfo(buildName, buildNumber, workspace):
-
     # collect ENV variables for build-info
     print(runCommand("jfrog rt build-collect-env " + buildName + " " + buildNumber))
 
