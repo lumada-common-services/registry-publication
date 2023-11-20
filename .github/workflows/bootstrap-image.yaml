@@ -8,7 +8,7 @@ on:
       - "Dockerfile"
       - "scripts/**"
 env:
-  ARTIFACTORY: cicd-oci-release-orl.repo.orl.eng.hitachivantara.com
+  ARTIFACTORY: one.hitachivantara.com/devops-docker-release
   IMAGE: ${{ github.repository_owner }}/${{ github.event.repository.name }}
 jobs:
 
@@ -34,7 +34,7 @@ jobs:
       - name: Push to Artifactory
         id: push-to-artifactory
         run: |
-          docker login ${{ env.ARTIFACTORY }} -u ${{ secrets.LDOS_ARTIFACTORY_USER }} -p ${{ secrets.LDOS_ARTIFACTORY_API_KEY }}
+          docker login ${{ env.ARTIFACTORY }} -u ${{ secrets.JFROG_JARJAR_SERVICE_USERNAME  }} -p ${{ secrets.JFROG_JARJAR_SERVICE_TOKEN  }}
           docker push "${{ env.ARTIFACTORY }}/${{ env.IMAGE }}"
 
       - name: Summary
