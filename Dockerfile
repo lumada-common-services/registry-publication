@@ -2,7 +2,7 @@ FROM one.hitachivantara.com/docker/python:alpine3.16
 
 WORKDIR /registry-publication
 
-## Make sure that the CLI doesn't offer to store credentials
+## Make sure that the CLI doesn't offer to store credentials 
 ENV JFROG_CLI_OFFER_CONFIG=false
 
 RUN apk update

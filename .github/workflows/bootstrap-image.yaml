@@ -34,7 +34,7 @@ jobs:
       - name: Push to Artifactory
         id: push-to-artifactory
         run: |
-          docker login ${{ env.ARTIFACTORY }} -u ${{ secrets.JFROG_JARJAR_SERVICE_USERNAME  }} -p ${{ secrets.JFROG_JARJAR_SERVICE_TOKEN  }}
+          sudo docker login ${{ env.ARTIFACTORY }} -u ${{ secrets.JFROG_JARJAR_SERVICE_USERNAME  }} -p ${{ secrets.JFROG_JARJAR_SERVICE_TOKEN  }}
           docker push "${{ env.ARTIFACTORY }}/${{ env.IMAGE }}"
 
       - name: Summary
