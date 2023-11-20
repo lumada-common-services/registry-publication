@@ -40,4 +40,4 @@ outputs:
 
 runs:
   using: 'docker'
-  image: 'docker://cicd-oci-release-orl.repo.orl.eng.hitachivantara.com/lumada-common-services/registry-publication:20230403.48'
+  image: 'docker://one.hitachivantara.com/devops-docker-release/lumada-common-services/registry-publication:20231120.51'

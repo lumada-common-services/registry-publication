@@ -6,7 +6,7 @@ Usage example:
 - name: Run publication to registry
   id: registry-publication-action
   continue-on-error: false
-  uses: lumada-common-services/registry-publication@v1
+  uses: lumada-common-services/registry-publication@stable  #The stable tag always points to the latest changes
   with:
     ARTIFACTS_CONFIG_FILE: ".github/artifacts.yaml"
     ARTIFACTORY_APIKEY:    ${{ secrets.VC_ART_API_KEY }}
