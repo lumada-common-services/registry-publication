@@ -5,8 +5,8 @@ search-patterns:
   include: '.*/.github/.*'
   exclude: '(.*/.git/.*)'
 
-repository-manager: 'https://repo.orl.eng.hitachivantara.com/artifactory/'
-docker-base-url: 'repo.orl.eng.hitachivantara.com'
+repository-manager: 'https://one.hitachivantara.com/artifactory/'
+docker-base-url: 'one.hitachivantara.com'
 
 artifacts:
 

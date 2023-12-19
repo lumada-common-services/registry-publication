@@ -1,4 +1,4 @@
-FROM docker.repo.orl.eng.hitachivantara.com/python:alpine3.16
+FROM one.hitachivantara.com/docker/python:alpine3.16
 
 WORKDIR /registry-publication
 
